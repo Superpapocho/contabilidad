@@ -144,3 +144,63 @@ def fechas_nomina(fecha,factor):
         lista.append(str(datetime.date(z, x+1, w)))
 
     return lista
+
+def first_day_of_next_month(date):
+    day = 1
+    if date.month == 12:
+        month = 1
+        year = date.year + 1
+    else:
+        month = date.month + 1
+        year = date.year
+    new_date = datetime.date(year,month,day)
+    return new_date
+
+def same_day_n_months(date,months):
+    s_months = date.month + months
+    if s_months > 12:
+        month = s_months%12
+        year = date.year + s_months//12
+    else: 
+        month = s_months
+        year = date.year
+    meses_de_30 = [4,6,9,11]
+    if month in meses_de_30 and date.day == 31:
+        day = 30
+    elif month == 2 and date.day > 28:
+        day = 28
+    else:
+        day = date.day
+    new_date = datetime.date(year,month,day)
+    return new_date
+
+def fecha_compra(fecha):
+    w=fecha.day
+    x=fecha.month
+    z=fecha.year
+    lista = []
+    fecha = datetime.date(z,x,w)
+    for i in range(4):
+        lista.append(str(fecha))
+    return lista
+    
+def fecha_venta(fecha):
+    w=fecha.day
+    x=fecha.month
+    z=fecha.year
+    lista = []
+    fecha = datetime.date(z,x,w)
+    for i in range(6):
+        lista.append(fecha)
+    return lista
+
+def fecha_depreciacion(fecha,meses):
+    w=fecha.day
+    x=fecha.month
+    z=fecha.year
+    lista = []
+    fecha = datetime.date(z,x,w)
+    for i in range(0,meses,1):
+        fecha_nt = same_day_n_months(fecha,i)
+        lista.append(fecha_nt)
+    return lista
