@@ -117,3 +117,36 @@ def naturaleza_nomina(factor):
     lista.append("Activo")
     
     return lista
+
+def naturaleza_compra_admin():
+    lista = []
+    lista.append("Activo")
+    lista.append("Pasivo")
+    lista.append("Activo")
+    lista.append("Pasivo")
+    return lista
+
+def naturaleza_compra_prod():
+    lista = []
+    lista.append("Activo")
+    lista.append("Pasivo")
+    lista.append("Activo")
+    lista.append("Pasivo")
+    return lista
+    
+def naturaleza_venta():
+    lista = []
+    lista.append("Activo")
+    lista.append("Costo")
+    lista.append("Activo")
+    lista.append("Activo")
+    lista.append("Ingreso")
+    lista.append("Pasivo")
+
+    return lista
+
+def naturaleza_depreciacion(meses):
+    lista = []
+    for i in range(meses):
+        lista.append("Gasto")
+    return lista
