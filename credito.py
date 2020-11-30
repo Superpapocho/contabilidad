@@ -6,6 +6,40 @@ Created on Fri Nov  6 20:56:53 2020
 """
 import datetime
 
+vida_util = {"Vehiculos":5,"Edificios":20,"Muebles y enseres":10,"Equipo de cómputo":3,
+             "Maquinaria y equipo":10}
+
+class Cuenta:
+    
+    def __init__(self):
+        self.Subtotal = 0
+        self.Iva = 0
+        self.Total = 0
+        self.Retefuente = 0
+        self.A_pagar = 0
+        self.Efectivo = 0
+        self.Por_Pagar = 0
+ 
+ #Para cuando se adicione una transacción a la cuenta       
+ 
+    def sumar_sin_iva(self,cantidad,precio,contado):
+        self.Subtotal = cantidad*precio
+        self.Iva = self.Subtotal * 0.19
+        self.Total = self.Subtotal + self.Iva
+        self.Retefuente = self.Subtotal * 0.025
+        self.A_pagar = self.Total - self.Retefuente
+        self.Efectivo = self.A_pagar * (contado/100)
+        self.Por_Pagar = self.A_pagar * ((100-contado)/100)
+        
+    def sumar_iva_incluido(self,cantidad,precio,contado):
+        self.Total = cantidad*precio
+        self.Subtotal = self.Total / 1.19
+        self.Iva = self.Subtotal * 0.19
+        self.Retefuente = self.Subtotal * 0.025
+        self.A_pagar = self.Total - self.Retefuente
+        self.Efectivo = self.A_pagar * (contado/100)
+        self.Por_Pagar = self.A_pagar * ((100-contado)/100)
+
 def D_append(x):
     debito.append(x)
     credito.append(0)
@@ -261,6 +295,152 @@ def credito_nomina(fecha, trabajador, salario, dotacion, arl, factor):
     
     return [debito,credito]    
     
+def credito_compra_sin_iva(cantidad,precio,contado):
+    global debito
+    debito = []
+    global credito
+    credito = []
+    Compra1 = Cuenta()
+    Compra1.sumar_sin_iva(cantidad,precio,contado)
+    D_append(round(Compra1.Subtotal))
+    D_append(round(Compra1.Iva))
+    C_append(round(Compra1.Efectivo))
+    if contado < 100:
+        C_append(round(Compra1.Por_Pagar))
+    C_append(round(Compra1.Retefuente))
+    return [debito,credito]
+    
+def credito_compra_iva_incluido(cantidad,precio,contado):
+    global debito
+    debito = []
+    global credito 
+    credito = []
+    Compra2 = Cuenta()
+    Compra2.sumar_iva_incluido(cantidad,precio,contado)
+    D_append(round(Compra2.Subtotal))
+    D_append(round(Compra2.Iva))
+    C_append(round(Compra2.Efectivo))
+    if contado < 100:
+        C_append(round(Compra2.Por_Pagar))
+    C_append(round(Compra2.Retefuente))
+    return [debito,credito]
+
+def credito_venta_sin_iva(cantidad,p_venta,p_compra,contado):
+    global debito
+    debito = []
+    global credito
+    credito = []
+    Venta = Cuenta()
+    Venta.sumar_sin_iva(cantidad,p_venta,contado)
+    C_append(round(p_compra*cantidad))
+    D_append(round(p_compra*cantidad))
+    D_append(round(Venta.Efectivo))
+    if contado < 100:
+        D_append(round(Venta.Por_Pagar))
+    D_append(round(Venta.Retefuente))
+    C_append(round(Venta.Subtotal))
+    C_append(round(Venta.Iva))
+    return [debito,credito]
+    
+def credito_venta_iva_incluido(cantidad,p_venta,p_compra,contado):
+    global debito
+    debito = []
+    global credito
+    credito = []
+    Venta = Cuenta()
+    Venta.sumar_iva_incluido(cantidad,p_venta,contado)
+    C_append(round(p_compra*cantidad))
+    D_append(round(p_compra*cantidad))
+    D_append(round(Venta.Efectivo))
+    C_append(round(Venta.Subtotal))
+    C_append(round(Venta.Iva))
+    if contado < 100:
+        D_append(round(Venta.Por_Pagar))
+    D_append(round(Venta.Retefuente))
+    return [debito,credito]   
+    
+def credito_venta_margen(cantidad,margen,p_compra,contado):
+    global debito
+    debito = []
+    global credito
+    credito = []
+    tasa_margen = margen / 100
+    p_venta = p_compra*(1 + tasa_margen)
+    Venta = Cuenta()
+    Venta.sumar_sin_iva(cantidad,p_venta,contado)
+    D_append(round(Venta.Efectivo))
+    C_append(round(p_compra*cantidad))
+    D_append(round(p_compra*cantidad))
+    C_append(round(Venta.Subtotal))
+    C_append(Venta.Iva)
+    if contado < 100:
+        D_append(round(Venta.Por_Pagar))
+    D_append(round(Venta.Retefuente))
+    return [debito,credito] 
+
+def credito_linea_recta(propiedad,valor,meses):
+    global debito
+    debito = []
+    global credito
+    credito = []
+    c = 1
+    salvamento = valor * 0.05
+    d = (valor-salvamento)/(12*vida_util[propiedad])
+    while valor-salvamento > 0 and c <= meses:
+        valor = valor - d
+        C_append(round(d,2))
+        c += 1
+    return [debito,credito]
+        
+def credito_suma_creciente(propiedad,v_inicial,meses):
+    global debito
+    debito = []
+    global credito
+    credito = []
+    c = 0
+    a = 0
+    b = 0
+    fact = []
+    for i in range(vida_util[propiedad]):
+        a += 1
+        fact.append(a)
+        b += a
+    for j in range(len(fact)):
+        fact[j] = fact[j] / b
+    valor = v_inicial
+    salvamento = v_inicial * 0.05
+    while valor-salvamento > 0 and c < meses:
+        año = c//12
+        d = (v_inicial-salvamento)*fact[año]/(12*vida_util[propiedad])
+        valor = valor - d
+        C_append(round(d,2))
+        c += 1
+    return [debito,credito]
+
+def credito_suma_decreciente(propiedad,v_inicial,meses):
+    global debito
+    debito = []
+    global credito
+    credito = []
+    c = 0
+    a = vida_util[propiedad] 
+    b = 0
+    fact = []
+    for i in range(vida_util[propiedad]):
+        fact.append(a)
+        b += a
+        a -= 1
+    for j in range(len(fact)):
+        fact[j] = fact[j] / b
+    valor = v_inicial
+    salvamento = v_inicial * 0.05
+    while valor-salvamento > 0 and c < meses:
+        año = c//12
+        d = (v_inicial-salvamento)*fact[año]/(12*vida_util[propiedad])
+        valor = valor - d
+        C_append(round(d,2))
+        c += 1
+    return [debito,credito]
     
     
     
