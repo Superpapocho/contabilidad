@@ -118,6 +118,36 @@ def cuenta_nomina(factor):
         lista.append("Caja de compensación")
         lista.append("Salud")
         lista.append("Pensión")
+        
+def cuenta_compra_admin():
+    lista = []
+    lista.append("PP&E")
+    lista.append("IVA")
+    lista.append("Efectivo")
+    lista.append("Retefuente")
+    return lista
+
+def cuenta_compra_prod():
+    lista = []
+    lista.append("IVA")
+    lista.append("Efectivo")
+    lista.append("Retefuente")
+    return lista
+
+def cuenta_venta():
+    lista = []
+    lista.append("Costo de ventas")
+    lista.append("Efectivo")
+    lista.append("Anticipo de impuestos")
+    lista.append("Ingreso de ventas")
+    lista.append("IVA")
+    return lista
+
+def cuenta_depreciacion(meses):
+    lista = []
+    for i in range(meses):
+        lista.append("Depreciación")
+    return lista
     
     
     lista.append("Sueldo a pagar")
