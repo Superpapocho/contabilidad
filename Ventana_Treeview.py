@@ -14,6 +14,20 @@ import cuenta
 import naturaleza
 import credito
 
+class Producto:
+    
+    def __init__(self):
+        self.cantidad = 0 
+        self.precio = 0
+        self.valor = 0
+        
+    def sumar(self,cantidad,precio):
+        self.cantidad = self.cantidad + cantidad
+        self.valor = self.valor + (precio * cantidad)
+        self.precio = self.valor / self.cantidad
+        
+Sillas = Producto()
+Mesas = Producto()
 
 root = Tk()
 root.title('Contabilidad')
@@ -349,6 +363,18 @@ def venta_acciones():
 
 def nomina():
     ventana_nomina()
+    
+def Compra_admin():
+    ventana_compra_admin()
+    
+def Compra_produc():
+    ventana_compra_prod()
+    
+def Venta_mercancias():
+    ventana_ventas()
+    
+def Depreciacion():
+    ventana_depreciacion()
 
 """
 Buttons Funciones contables
@@ -365,6 +391,17 @@ Venta_acciones.grid(row=1,column=3,padx=5, pady=3)
 Nomina = Button(wrapper3, text = "Nomina",command=nomina)
 Nomina.grid(row=1,column=4,padx=5, pady=3)
 
+compra_admin = Button(wrapper3, text = "Compras admin.",command=Compra_admin)
+compra_admin.grid(row=1,column=4,padx=5, pady=3)
+
+compra_produc = Button(wrapper3, text = "Compras produc.",command=Compra_produc)
+compra_produc.grid(row=1,column=5,padx=5, pady=3)
+
+venta_mercancias =  Button(wrapper3, text = "Venta de mercancías",command=Venta_mercancias)
+venta_mercancias.grid(row=1,column=6,padx=5, pady=3)
+
+depreciacion = Button(wrapper3, text = "Depreciación", command = Depreciacion)
+depreciacion.grid(row=1,column=7,padx=5,pady=3)
 
 """
 Amortización
@@ -931,34 +968,403 @@ def ventana_nomina():
     boton_nomina = Button(newNomina, text = "Agregar datos",command=lambda: datos_nomina(newNomina))
     boton_nomina.grid(row=7,column=2,padx=5, pady=3)
 
+"""
+Compras Administrativas
+"""
 
+def datos_compra_admin(NewCompraAdmin):
+    
+    fecha = fecha_box.get()
+    fecha_dt = datetime.strptime(fecha, "%d/%m/%Y")
+    Fecha = Cambio_de_fecha.fecha_compra(fecha_dt)
 
+    cantidad = float(cantidad_box.get())
+    precio = float(precio_box.get())
+    contado = float(contado_box.get())
+    
+    Naturaleza = naturaleza.naturaleza_compra_admin()
+    Cuenta = cuenta.cuenta_compra_admin()
+    
+    if contado < 100:
+        Fecha.insert(3,fecha_dt)
+        Naturaleza.insert(3,"Pasivo")
+        Cuenta.insert(3,"Cuentas comerciales por pagar")
+    
+    iva = iva_box.get()
+    if iva == 1:
+        Credito = []
+        Credito = credito.credito_compra_sin_iva(cantidad,precio,contado)
+    elif iva == 2:
+        Credito = []
+        Credito = credito.credito_compra_iva_incluido(cantidad,precio,contado)
+        
+    Datos = [Fecha,Naturaleza,Cuenta,Credito[0],Credito[1]]
+    
+    z = []
+    
+    for i in range(len(Fecha)):
+        w = []
+        for j in Datos:
+            w.append(j[i])
+        z.append(w)    
 
+    for i in range(len(z)):
+        my_tree.insert(parent="",index='end', text="Child",values=z[i])
 
+    # Clear the boxes
+    fecha_box.delete(0,END)
+    cantidad_box.delete(0,END)
+    precio_box.delete(0,END)
+    contado_box.delete(0,END)
+    iva_box.set(None)
+    
+    close_window(NewCompraAdmin)
+    add()  
 
+def ventana_compra_admin():
+    
+    global NewCompraAdmin
+    NewCompraAdmin = Toplevel() 
+    NewCompraAdmin.title("Compras Administrativas")  
+    NewCompraAdmin.geometry("500x500")
+    
+    fecha = Label(NewCompraAdmin, text="Fecha",width=20,anchor=W)
+    fecha.grid(row=0,column=0, padx=5, pady=3)
+    cantidad = Label(NewCompraAdmin, text="Cantidad",width=20,anchor=W)
+    cantidad.grid(row=1,column=0, padx=5, pady=3)
+    precio = Label(NewCompraAdmin, text="Precio",width=20,anchor=W)
+    precio.grid(row=2,column=0, padx=5, pady=3)
+    contado = Label(NewCompraAdmin, text="Pago de contado (%)",width=20,anchor=W)
+    contado.grid(row=3,column=0, padx=5, pady=3)
 
+    # Entry boxes
+    global fecha_box
+    fecha_box = Entry(NewCompraAdmin)
+    fecha_box.grid(row=0,column=1, padx=5, pady=3)
+    global cantidad_box
+    cantidad_box = Entry(NewCompraAdmin)
+    cantidad_box.grid(row=1,column=1, padx=5, pady=3)
+    global precio_box
+    precio_box = Entry(NewCompraAdmin)
+    precio_box.grid(row=2,column=1, padx=5, pady=3)
+    global contado_box
+    contado_box = Entry(NewCompraAdmin)
+    contado_box.grid(row=3,column=1,padx=5,pady=3)
+    global iva_box
+    iva_box = IntVar()
+    global sin_iva
+    sin_iva = ttk.Radiobutton(NewCompraAdmin,variable = iva_box,text = "Sin IVA",value=1)
+    sin_iva.grid(row=4,column=0)
+    global con_iva
+    con_iva = ttk.Radiobutton(NewCompraAdmin,variable = iva_box,text = "IVA incluido",value=2)
+    con_iva.grid(row=4,column=1) 
+          
+    compra_admin = Button(NewCompraAdmin, text = "Agregar datos",command=lambda: datos_compra_admin(NewCompraAdmin))  
+    compra_admin.grid(row=5,column=1,padx=5, pady=3)
+    
+"""
+Datos Comercialización
+"""
+    
+def datos_compra_prod(NewCompraProd):
+    
+    fecha = fecha_box.get()
+    fecha_dt = datetime.strptime(fecha, "%d/%m/%Y")
+    Fecha = Cambio_de_fecha.fecha_compra(fecha_dt)
 
+    cantidad = float(cantidad_box.get())
+    precio = float(precio_box.get())
+    contado = float(contado_box.get())
+    
+    if mercancia_box.get() == "Sillas":
+        Sillas.sumar(cantidad,precio)
+    elif mercancia_box.get() == "Mesas":
+        Mesas.sumar(cantidad,precio)
+    
+    Naturaleza = naturaleza.naturaleza_compra_prod()
+    Cuenta = cuenta.cuenta_compra_prod()
+    texto = "Inventarios" + " (" + mercancia_box.get() + ")"
+    Cuenta.insert(1,texto)
+    
+    if contado < 100:
+        Fecha.insert(3,fecha_dt)
+        Naturaleza.insert(3,"Pasivo")
+        Cuenta.insert(3,"Cuentas comerciales por pagar")
+    
+    iva = iva_box.get()
+    if iva == 1:
+        Credito = credito.credito_compra_sin_iva(cantidad,precio,contado)
+        
+    elif iva == 2:
+        Credito = credito.credito_compra_iva_incluido(cantidad,precio,contado)
+        
+    Datos = [Fecha,Naturaleza,Cuenta,Credito[0],Credito[1]]
+        
+    z = []
+    
+    for i in range(len(Fecha)):
+        w = []
+        for j in Datos:
+            w.append(j[i])
+        z.append(w)    
+        
+    for i in range(len(z)):
+        my_tree.insert(parent='', index='end', text="Child",values=z[i])
+        
+    # Clear the boxes
+    fecha_box.delete(0,END)
+    mercancia_box.delete(0,END)
+    cantidad_box.delete(0,END)
+    precio_box.delete(0,END)
+    contado_box.delete(0,END)
+    iva_box.set(None)
+    
+    close_window(NewCompraProd)
+    add()
 
+def ventana_compra_prod(): 
 
+    # Toplevel object which will be treated as a new window 
+    global NewCompraProd
+    NewCompraProd = Toplevel() 
+    NewCompraProd.title("Compras Comercialización")  
+    NewCompraProd.geometry("500x500") 
+    
+    fecha = Label(NewCompraProd, text="Fecha",width=20,anchor=W)
+    fecha.grid(row=0,column=0, padx=5, pady=3)
+    mercancia = Label(NewCompraProd, text="Mercancía",width=20,anchor=W)
+    mercancia.grid(row=1,column=0,padx=5,pady=3)
+    cantidad = Label(NewCompraProd, text="Cantidad",width=20,anchor=W)
+    cantidad.grid(row=2,column=0, padx=5, pady=3)
+    precio = Label(NewCompraProd, text="Precio",width=20,anchor=W)
+    precio.grid(row=3,column=0, padx=5, pady=3)
+    contado = Label(NewCompraProd, text="Pago de contado (%)",width=20,anchor=W)
+    contado.grid(row=4,column=0, padx=5, pady=3)
 
+   # Entry boxes
+    global fecha_box
+    fecha_box = Entry(NewCompraProd)
+    fecha_box.grid(row=0,column=1, padx=5, pady=3)
+    global mercancia_box
+    mercancias = ("Sillas","Mesas")
+    mercancia_box = ttk.Combobox(NewCompraProd, values = mercancias)
+    mercancia_box.grid(row=1,column= 1)
+    global cantidad_box
+    cantidad_box = Entry(NewCompraProd)
+    cantidad_box.grid(row=2,column=1, padx=5, pady=3)
+    global precio_box
+    precio_box = Entry(NewCompraProd)
+    precio_box.grid(row=3,column=1, padx=5, pady=3)
+    global contado_box
+    contado_box = Entry(NewCompraProd)
+    contado_box.grid(row=4,column=1,padx=5,pady=3)
+    global iva_box
+    iva_box = IntVar()
+    sin_iva = ttk.Radiobutton(NewCompraProd,variable = iva_box,text = "Sin IVA",value=1)
+    sin_iva.grid(row=5,column=0)
+    con_iva = ttk.Radiobutton(NewCompraProd,variable = iva_box,text = "IVA incluido",value=2)
+    con_iva.grid(row=5,column=2)   
+    
+    compra_prod = Button(NewCompraProd, text = "Agregar datos",command= lambda:datos_compra_prod(NewCompraProd))
+    compra_prod.grid(row=6,column=1,padx=5, pady=3)
+    
+"""
+Venta de mercancías
+"""
 
+def datos_venta(NewVenta):
+    
+    fecha = fecha_box.get()
+    fecha_dt = datetime.strptime(fecha, "%d/%m/%Y")
+    Fecha = Cambio_de_fecha.fecha_venta(fecha_dt)
 
+    cantidad = float(cantidad_box.get())
+    p_venta = float(precio_box.get())
+    contado = float(contado_box.get())
+    
+    Naturaleza = naturaleza.naturaleza_venta()
+    Cuenta = cuenta.cuenta_venta()
+    texto = "Inventarios (" + mercancia_box.get() + ")"
+    Cuenta.insert(0,texto)
+    
+    if contado < 100:
+        Fecha.insert(3,fecha_dt)
+        Naturaleza.insert(3,"Activo")
+        Cuenta.insert(3,"Cuentas comerciales por cobrar")
+        
+    if mercancia_box.get() == "Sillas":
+        p_compra = Sillas.precio
+    elif mercancia_box.get() == "Mesas":
+        p_compra = Mesas.precio
+    
+    metodo = metodo_box.get()
+    if metodo == 0:
+        Credito = credito.credito_venta_sin_iva(cantidad,p_venta,p_compra,contado)
+    elif metodo == 1:
+        Credito = credito.credito_venta_iva_incluido(cantidad,p_venta,p_compra,contado)
+    elif metodo == 2:
+        Credito = credito.credito_venta_margen(cantidad,margen,p_compra,contado)
+        
+    Datos = [Fecha,Naturaleza,Cuenta,Credito[0],Credito[1]]
+    z = []
+    
+    for i in range(len(Fecha)):
+        w = []
+        for j in Datos:
+            w.append(j[i])
+        z.append(w) 
+        
+    for i in range(len(z)):
+        my_tree.insert(parent="",index='end', text="Child",values=z[i])
+    
+    # Clear the boxes
+    fecha_box.delete(0,END)
+    mercancia_box.delete(0,END)
+    cantidad_box.delete(0,END)
+    precio_box.delete(0,END)
+    contado_box.delete(0,END)
+    metodo_box.set(None)
+    
+    close_window(NewVenta)
+    add()
 
+def ventana_ventas():
+    
+    global NewVenta
+    NewVenta = Toplevel() 
+    NewVenta.title("Ventas")  
+    NewVenta.geometry("500x500")
+    
+    fecha = Label(NewVenta, text="Fecha",width=20,anchor=W)
+    fecha.grid(row=0,column=0, padx=5, pady=3)
+    mercancia = Label(NewVenta, text="Mercancías",width=20,anchor=W)
+    mercancia.grid(row=1,column=0, padx=5, pady=3)
+    cantidad = Label(NewVenta, text="Cantidad",width=20,anchor=W)
+    cantidad.grid(row=2,column=0, padx=5, pady=3)
+    metodo = Label(NewVenta, text="Método",width=20,anchor=W)
+    metodo.grid(row=3,column=0, padx=5, pady=3)
+    precio = Label(NewVenta,text="Precio / margen",width=20,anchor=W)
+    precio.grid(row=6,column=0, padx=5, pady=3)
+    contado = Label(NewVenta, text="Pago de contado (%)", width=20, anchor=W)
+    contado.grid(row=7,column=0, padx=5, pady=3)
 
+    # Entry boxes        
+    
+    global fecha_box
+    fecha_box = Entry(NewVenta)
+    fecha_box.grid(row=0,column=1, padx=5, pady=3)
+    global mercancia_box
+    mercancias = ("Sillas","Mesas")
+    mercancia_box = ttk.Combobox(NewVenta, values = mercancias)
+    mercancia_box.grid(row=1,column= 1)
+    global cantidad_box
+    cantidad_box = Entry(NewVenta)
+    cantidad_box.grid(row=2,column=1, padx=5, pady=3)
+    global metodo_box
+    metodo_box = IntVar()
+    sin_iva = ttk.Radiobutton(NewVenta,variable = metodo_box,text = "Por precio de venta (sin IVA)",value=0)
+    sin_iva.grid(row=3,column=1)
+    con_iva = ttk.Radiobutton(NewVenta,variable = metodo_box,text = "Por precio de venta (IVA incluido)",value=1)
+    con_iva.grid(row=4,column=1)
+    margen = ttk.Radiobutton(NewVenta,variable = metodo_box, text = "Por margen de utilidad", value=2)
+    margen.grid(row=5,column=1)
+    global precio_box
+    precio_box = Entry(NewVenta)
+    precio_box.grid(row=6,column=1, padx=5, pady=3)
+    global contado_box
+    contado_box = Entry(NewVenta)
+    contado_box.grid(row=7,column=1,padx=5,pady=3)
+    
+    venta = Button(NewVenta, text = "Agregar datos",command= lambda:datos_venta(NewVenta))
+    venta.grid(row=8,column=1,padx=5, pady=3)
+    
+"""
+Depreciación
+"""
+    
+def datos_depreciacion(NewDeprecio):
+    
+    fecha = fecha_box.get()
+    fecha_dt = datetime.strptime(fecha, "%d/%m/%Y")
+    valor = int(valor_box.get())
+    meses = int(meses_box.get())
+    
+    Fecha = Cambio_de_fecha.fecha_depreciacion(fecha_dt,meses)
+    Naturaleza = naturaleza.naturaleza_depreciacion(meses)
+    Cuenta = cuenta.cuenta_depreciacion(meses)
+    
+    if metodo_box.get() == "Línea recta":
+        Credito = credito.credito_linea_recta(tipo_box.get(),valor,meses)
+    elif metodo_box.get() == "Suma creciente":
+        Credito = credito.credito_suma_creciente(tipo_box.get(),valor,meses)
+    elif metodo_box.get() == "Suma decreciente":
+        Credito = credito.credito_suma_decreciente(tipo_box.get(),valor,meses)
+        
+    Datos = [Fecha,Naturaleza,Cuenta,Credito[0],Credito[1]]
+    z = []
+    
+    for i in range(len(Fecha)):
+        w = []
+        for j in Datos:
+            w.append(j[i])
+        z.append(w)    
+        
+    for i in range(len(z)):
+        my_tree.insert(parent="",index='end', text="Child",values=z[i])
+        
+    # Clear the boxes
+    fecha_box.delete(0,END)
+    tipo_box.delete(0,END)
+    valor_box.delete(0,END)
+    meses_box.delete(0,END)
+    metodo_box.delete(0,END) 
+    
+    close_window(NewDeprecio)
+    add()
 
+def ventana_depreciacion():
+    
+    NewDeprecio = Toplevel() 
+    NewDeprecio.title("Depreciación")  
+    NewDeprecio.geometry("500x500")
+    
+    fecha = Label(NewDeprecio, text="Fecha",width=20,anchor=W)
+    fecha.grid(row=0,column=0, padx=5, pady=3)
+    tipo = Label(NewDeprecio, text="Tipo",width=20,anchor=W)
+    tipo.grid(row=1,column=0, padx=5, pady=3)
+    valor = Label(NewDeprecio, text="Valor histórico",width=20,anchor=W)
+    valor.grid(row=2,column=0, padx=5, pady=3)
+    meses = Label(NewDeprecio, text="Meses",width=20,anchor=W)
+    meses.grid(row=3,column=0, padx=5, pady=3)
+    metodo = Label(NewDeprecio, text="Método", width=20, anchor=W)
+    metodo.grid(row=4,column=0, padx=5, pady=3)
+    
+    # Entry boxes
+    global fecha_box
+    fecha_box = Entry(NewDeprecio)
+    fecha_box.grid(row=0,column=1, padx=5, pady=3)
+    global tipo_box
+    options1 = ("Vehiculos","Edificios","Muebles y enseres","Equipo de cómputo",
+             "Maquinaria y equipo")
+    tipo_box = ttk.Combobox(NewDeprecio, values = options1)
+    tipo_box.grid(row=1,column= 1)
+    global valor_box
+    valor_box = Entry(NewDeprecio)
+    valor_box.grid(row=2,column=1, padx=5, pady=3)
+    global meses_box
+    meses_box = Entry(NewDeprecio)
+    meses_box.grid(row=3,column=1, padx=5, pady=3)
+    global metodo_box 
+    options2 = ("Línea recta","Suma creciente","Suma decreciente")
+    metodo_box = ttk.Combobox(NewDeprecio, values = options2)
+    metodo_box.grid(row=4,column=1)
+        
+    depreciacion = Button(NewDeprecio, text = "Agregar datos",command= lambda:datos_depreciacion(NewDeprecio))
+    depreciacion.grid(row=5,column=1,padx=5, pady=3)
 
-
-
-
-
-
-
-
-
-
-
-
-
+"""
+Cerrar ventana    
+"""    
 
 root.mainloop()
 
