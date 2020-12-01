@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Nov  1 11:32:30 2020
-
 @author: Windows
 """
 
@@ -46,7 +45,7 @@ Add style
 """
 style = ttk.Style()
 # Pick a theme
-style.theme_use('clam')
+style.theme_use('default')
 
 # Configure treeview colors
 style.configure("Treeview",
@@ -59,6 +58,9 @@ style.configure("Treeview",
 style.map('Treeview',
     background=[('selected','green')])
 
+style.configure("mystyle.Treeview", highlightthickness=0, bd=0, font=('Calibri', 11)) # Modify the font of the body
+style.configure("mystyle.Treeview.Heading", font=('Calibri', 13,'bold')) # Modify the font of the headings
+style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) # Remove the borders
 """
 Create Treeview Frame
 """     
@@ -71,9 +73,28 @@ tree_scroll = Scrollbar(tree_frame)
 tree_scroll.pack(side=RIGHT,fill=Y)
 
 # Create Treeview - selectmode("browse","none","extended")
-my_tree = ttk.Treeview(tree_frame, yscrollcommand=tree_scroll.set)
+my_tree = ttk.Treeview(tree_frame, yscrollcommand=tree_scroll.set, style="mystyle.Treeview")
+
+my_tree["columns"] = ("Fecha", "Cuenta","Naturaleza" ,"Debito", "Credito")
+my_tree.column("#0",width=0)
+my_tree.column("Fecha",width=200)
+my_tree.column("Cuenta",width=200)
+my_tree.column("Naturaleza",width=200)
+my_tree.column("Debito",width=200)
+my_tree.column("Credito",width=200)
+
+#Headings
+
+my_tree.heading("#0",text="")
+my_tree.heading("Fecha",text="Fecha")
+my_tree.heading("Cuenta",text="Cuenta")
+my_tree.heading("Naturaleza",text="Naturaleza")
+my_tree.heading("Debito",text="Debito")
+my_tree.heading("Credito",text="Credito")
 # Configure Scrollbar
 tree_scroll.config(command=my_tree.yview)
+
+my_tree.pack()
 
 def file_open():
     filename=filedialog.askopenfilename(
@@ -111,7 +132,30 @@ def file_open():
     # Recalcula Débito y Crédito
     add()
     
-     
+def save_open():
+    filename = filedialog.asksaveasfilename(title="Select file",filetypes=[("Excel file", "*.xlsx")])
+    if filename:
+        column_a_list = []
+        column_b_list = []
+        column_c_list = []
+        column_d_list = []
+        column_e_list = []
+
+        for child in my_tree.get_children():
+            column_a_list.append(my_tree.item(child)["values"][0])   
+            column_b_list.append(my_tree.item(child)["values"][1])  
+            column_c_list.append(my_tree.item(child)["values"][2])  
+            column_d_list.append(my_tree.item(child)["values"][3])  
+            column_e_list.append(my_tree.item(child)["values"][4])  
+        
+        full_treeview_data_dict = {'Fecha': column_a_list, 'Cuenta': column_b_list, 'Naturaleza': column_c_list, 'Débito': column_d_list,'Crédito': column_e_list}
+
+        treeview_df = pd.DataFrame.from_dict(full_treeview_data_dict)
+        
+        str(filename).replace("xlsx","")
+        filename = "{0}.xlsx".format(filename)
+        treeview_df.to_excel(str(filename))
+        
 def clear_tree():
     my_tree.delete(*my_tree.get_children()) 
 """
@@ -284,7 +328,8 @@ root.config(menu=my_menu)
 # Number 1
 file_menu = Menu(my_menu,tearoff=False)
 my_menu.add_cascade(label="Archivo", menu=file_menu)
-file_menu.add_command(label="Open",command=file_open)
+file_menu.add_command(label="Abrir",command=file_open)
+file_menu.add_command(label="Guardar",command=save_open)
 
 my_label = Label(root, text='')
 my_label.pack(pady=20)
@@ -444,7 +489,7 @@ def datos_amortizacion():
         # Cuenta
         x2 = cuenta.cuenta_amortizacion_cf_cc(plazo)
         # Naturaleza
-        x3 = cuenta.cuenta_amortizacion_cf_cc(plazo)
+        x3 = cuenta.naturaleza_amortizacion_cf_cc(plazo)
         # Crédito y Debito
         comodin = credito.credito_amortizacion_cfija(plazo,monto,cuota_fija,tasa/100,diferencia)
         x4 = comodin[0]
@@ -456,7 +501,7 @@ def datos_amortizacion():
         # Cuenta
         x2 = cuenta.cuenta_amortizacion_cf_cc(plazo)
         # Naturaleza
-        x3 = cuenta.cuenta_amortizacion_cf_cc(plazo)
+        x3 = cuenta.naturaleza_amortizacion_cf_cc(plazo)
         # Crédito y Debito
         comodin = credito.credito_amortizacion_cc(plazo,monto,tasa/100,diferencia)
         x4 = comodin[0]
@@ -1367,4 +1412,5 @@ Cerrar ventana
 """    
 
 root.mainloop()
+
 
