@@ -13,21 +13,6 @@ import cuenta
 import naturaleza
 import credito
 
-class Producto:
-    
-    def __init__(self):
-        self.cantidad = 0 
-        self.precio = 0
-        self.valor = 0
-        
-    def sumar(self,cantidad,precio):
-        self.cantidad = self.cantidad + cantidad
-        self.valor = self.valor + (precio * cantidad)
-        self.precio = self.valor / self.cantidad
-        
-Sillas = Producto()
-Mesas = Producto()
-
 root = Tk()
 root.title('Contabilidad')
 root.geometry("1100x1100")
@@ -570,13 +555,6 @@ def ventana_amortizacion():
     amortizacion = Button(newAmort, text = "Agregar datos",command=datos_amortizacion)
     amortizacion.grid(row=5,column=2,padx=5, pady=3)
 
-def datos_cdt(my_tree):
-    pass
-
-def ventana_cdt(my_tree):    
-    pass
-
-
 """
 Sociedades
 """
@@ -1012,6 +990,21 @@ def ventana_nomina():
 
     boton_nomina = Button(newNomina, text = "Agregar datos",command=lambda: datos_nomina(newNomina))
     boton_nomina.grid(row=7,column=2,padx=5, pady=3)
+
+class Producto:
+    
+    def __init__(self):
+        self.cantidad = 0 
+        self.precio = 0
+        self.valor = 0
+        
+    def sumar(self,cantidad,precio):
+        self.cantidad = self.cantidad + cantidad
+        self.valor = self.valor + (precio * cantidad)
+        self.precio = self.valor / self.cantidad
+        
+Sillas = Producto()
+Mesas = Producto()
 
 """
 Compras Administrativas
