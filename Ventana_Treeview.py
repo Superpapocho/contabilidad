@@ -1384,8 +1384,8 @@ def ventana_depreciacion():
     NewDeprecio.title("Depreciación")  
     NewDeprecio.geometry("500x500")
     
-    #El usuario ingresa la fecha de la compra de un equipo, el valor de la compra
- ,  #y los meses para los cuales quiere hallar la depreciación.
+    #El usuario ingresa la fecha de la compra de un equipo, el valor de la compra, 
+    #y los meses para los cuales quiere hallar la depreciación.
     fecha = Label(NewDeprecio, text="Fecha",width=20,anchor=W)
     fecha.grid(row=0,column=0, padx=5, pady=3)
     tipo = Label(NewDeprecio, text="Tipo",width=20,anchor=W)
