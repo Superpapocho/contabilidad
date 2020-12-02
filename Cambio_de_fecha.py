@@ -174,6 +174,7 @@ def same_day_n_months(date,months):
     new_date = datetime.date(year,month,day)
     return new_date
 
+
 def fecha_compra(fecha):
     w=fecha.day
     x=fecha.month
@@ -194,13 +195,14 @@ def fecha_venta(fecha):
         lista.append(fecha)
     return lista
 
+
 def fecha_depreciacion(fecha,meses):
     w=fecha.day
     x=fecha.month
     z=fecha.year
     lista = []
     fecha = datetime.date(z,x,w)
-    for i in range(0,meses,1):
+    for i in range(1,meses+1,1):
         fecha_nt = same_day_n_months(fecha,i)
         lista.append(fecha_nt)
     return lista
