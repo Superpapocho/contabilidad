@@ -302,12 +302,12 @@ def credito_compra_sin_iva(cantidad,precio,contado):
     credito = []
     Compra1 = Cuenta()
     Compra1.sumar_sin_iva(cantidad,precio,contado)
-    D_append(round(Compra1.Subtotal))
-    D_append(round(Compra1.Iva))
-    C_append(round(Compra1.Efectivo))
+    D_append(round(Compra1.Subtotal,2))
+    D_append(round(Compra1.Iva,2))
+    C_append(round(Compra1.Efectivo,2))
     if contado < 100:
-        C_append(round(Compra1.Por_Pagar))
-    C_append(round(Compra1.Retefuente))
+        C_append(round(Compra1.Por_Pagar,2))
+    C_append(round(Compra1.Retefuente,2))
     return [debito,credito]
     
 def credito_compra_iva_incluido(cantidad,precio,contado):
@@ -317,12 +317,12 @@ def credito_compra_iva_incluido(cantidad,precio,contado):
     credito = []
     Compra2 = Cuenta()
     Compra2.sumar_iva_incluido(cantidad,precio,contado)
-    D_append(round(Compra2.Subtotal))
-    D_append(round(Compra2.Iva))
-    C_append(round(Compra2.Efectivo))
+    D_append(round(Compra2.Subtotal,2))
+    D_append(round(Compra2.Iva,2))
+    C_append(round(Compra2.Efectivo,2))
     if contado < 100:
-        C_append(round(Compra2.Por_Pagar))
-    C_append(round(Compra2.Retefuente))
+        C_append(round(Compra2.Por_Pagar,2))
+    C_append(round(Compra2.Retefuente,2))
     return [debito,credito]
 
 def credito_venta_sin_iva(cantidad,p_venta,p_compra,contado):
@@ -332,14 +332,14 @@ def credito_venta_sin_iva(cantidad,p_venta,p_compra,contado):
     credito = []
     Venta = Cuenta()
     Venta.sumar_sin_iva(cantidad,p_venta,contado)
-    C_append(round(p_compra*cantidad))
-    D_append(round(p_compra*cantidad))
-    D_append(round(Venta.Efectivo))
+    C_append(round(p_compra*cantidad,2))
+    D_append(round(p_compra*cantidad,2))
+    D_append(round(Venta.Efectivo,2))
     if contado < 100:
-        D_append(round(Venta.Por_Pagar))
-    D_append(round(Venta.Retefuente))
-    C_append(round(Venta.Subtotal))
-    C_append(round(Venta.Iva))
+        D_append(round(Venta.Por_Pagar,2))
+    D_append(round(Venta.Retefuente,2))
+    C_append(round(Venta.Subtotal,2))
+    C_append(round(Venta.Iva,2))
     return [debito,credito]
     
 def credito_venta_iva_incluido(cantidad,p_venta,p_compra,contado):
@@ -349,14 +349,14 @@ def credito_venta_iva_incluido(cantidad,p_venta,p_compra,contado):
     credito = []
     Venta = Cuenta()
     Venta.sumar_iva_incluido(cantidad,p_venta,contado)
-    C_append(round(p_compra*cantidad))
-    D_append(round(p_compra*cantidad))
-    D_append(round(Venta.Efectivo))
-    C_append(round(Venta.Subtotal))
-    C_append(round(Venta.Iva))
+    C_append(round(p_compra*cantidad,2))
+    D_append(round(p_compra*cantidad,2))
+    D_append(round(Venta.Efectivo,2))
+    C_append(round(Venta.Subtotal,2))
+    C_append(round(Venta.Iva,2))
     if contado < 100:
-        D_append(round(Venta.Por_Pagar))
-    D_append(round(Venta.Retefuente))
+        D_append(round(Venta.Por_Pagar,2))
+    D_append(round(Venta.Retefuente,2))
     return [debito,credito]   
     
 def credito_venta_margen(cantidad,margen,p_compra,contado):
@@ -368,14 +368,14 @@ def credito_venta_margen(cantidad,margen,p_compra,contado):
     p_venta = p_compra*(1 + tasa_margen)
     Venta = Cuenta()
     Venta.sumar_sin_iva(cantidad,p_venta,contado)
-    D_append(round(Venta.Efectivo))
-    C_append(round(p_compra*cantidad))
-    D_append(round(p_compra*cantidad))
-    C_append(round(Venta.Subtotal))
-    C_append(Venta.Iva)
+    D_append(round(Venta.Efectivo,2))
+    C_append(round(p_compra*cantidad,2))
+    D_append(round(p_compra*cantidad,2))
+    C_append(round(Venta.Subtotal,2))
+    C_append(Venta.Iva,2)
     if contado < 100:
-        D_append(round(Venta.Por_Pagar))
-    D_append(round(Venta.Retefuente))
+        D_append(round(Venta.Por_Pagar,2))
+    D_append(round(Venta.Retefuente,2))
     return [debito,credito] 
 
 def credito_linea_recta(propiedad,valor,meses):
