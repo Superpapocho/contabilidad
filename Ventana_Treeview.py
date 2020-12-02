@@ -41,7 +41,7 @@ style.configure("Treeview",
     )
 # Change selected color
 style.map('Treeview',
-    background=[('selected','green')])
+    background=[('selected','#009999')])
 
 style.configure("mystyle.Treeview", highlightthickness=0, bd=0, font=('Calibri', 11)) # Modify the font of the body
 style.configure("mystyle.Treeview.Heading", font=('Calibri', 13,'bold')) # Modify the font of the headings
