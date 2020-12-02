@@ -81,6 +81,7 @@ tree_scroll.config(command=my_tree.yview)
 
 my_tree.pack()
 
+# Open new file
 def file_open():
     filename=filedialog.askopenfilename(
         initialdir="D:/Windows/Desktop/Proyecto/contabilidad-main",
@@ -116,7 +117,8 @@ def file_open():
     
     # Recalcula Débito y Crédito
     add()
-    
+
+# Save current file
 def save_open():
     filename = filedialog.asksaveasfilename(title="Select file",filetypes=[("Excel file", "*.xlsx")])
     if filename:
@@ -168,6 +170,7 @@ def add():
     y.set("Crédito: "+str(total_C))
     lbl_C.config(textvariable=y)
 
+# Definición de variables globales para la función venta_acciones
 acciones = 0
 precio_par = 0
 def definir_preciopar(y):
@@ -255,7 +258,7 @@ def remove_many():
     # Recalcula Débito y Crédito
     add()
         
-# Select record
+# Seleccionar registro
 def select_record():
     # Clear entry boxes
     fecha_box.delete(0,END)
@@ -274,7 +277,7 @@ def select_record():
     debito_box.insert(0,values[3])
     credito_box.insert(0,values[4])
     
-# Click function(Binding)
+# Función de doble clic para seleccionar fila
 def clicker(e):
     select_record()
 
