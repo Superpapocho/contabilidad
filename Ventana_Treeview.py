@@ -1069,6 +1069,8 @@ def ventana_compra_admin():
     NewCompraAdmin.title("Compras Administrativas")  
     NewCompraAdmin.geometry("500x500")
     
+    #El usuario ingresa la fecha, la cantidad de unidades compradas, el precio de compra y el porcentaje a pagar de contado.
+    
     fecha = Label(NewCompraAdmin, text="Fecha",width=20,anchor=W)
     fecha.grid(row=0,column=0, padx=5, pady=3)
     cantidad = Label(NewCompraAdmin, text="Cantidad",width=20,anchor=W)
@@ -1091,6 +1093,8 @@ def ventana_compra_admin():
     global contado_box
     contado_box = Entry(NewCompraAdmin)
     contado_box.grid(row=3,column=1,padx=5,pady=3)
+    
+    #El usuario puede escoger entre dos opciones: sin IVA y con IVA incluido
     global iva_box
     iva_box = IntVar()
     global sin_iva
@@ -1171,6 +1175,8 @@ def ventana_compra_prod():
     NewCompraProd.title("Compras Comercialización")  
     NewCompraProd.geometry("500x500") 
     
+     #El usuario ingresa la fecha, la cantidad de unidades compradas, el precio de compra y el porcentaje a pagar de contado.
+    
     fecha = Label(NewCompraProd, text="Fecha",width=20,anchor=W)
     fecha.grid(row=0,column=0, padx=5, pady=3)
     mercancia = Label(NewCompraProd, text="Mercancía",width=20,anchor=W)
@@ -1186,6 +1192,8 @@ def ventana_compra_prod():
     global fecha_box
     fecha_box = Entry(NewCompraProd)
     fecha_box.grid(row=0,column=1, padx=5, pady=3)
+    
+    #El usuario escoge qué clase de producto compró
     global mercancia_box
     mercancias = ("Sillas","Mesas")
     mercancia_box = ttk.Combobox(NewCompraProd, values = mercancias)
@@ -1199,6 +1207,8 @@ def ventana_compra_prod():
     global contado_box
     contado_box = Entry(NewCompraProd)
     contado_box.grid(row=4,column=1,padx=5,pady=3)
+    
+    #El usuario puede escoger entre dos opciones: sin IVA y con IVA incluido
     global iva_box
     iva_box = IntVar()
     sin_iva = ttk.Radiobutton(NewCompraProd,variable = iva_box,text = "Sin IVA",value=1)
@@ -1218,7 +1228,7 @@ def datos_venta(NewVenta):
     fecha = fecha_box.get()
     fecha_dt = datetime.strptime(fecha, "%d/%m/%Y")
     Fecha = Cambio_de_fecha.fecha_venta(fecha_dt)
-
+    
     cantidad = float(cantidad_box.get())
     p_venta = float(precio_box.get())
     contado = float(contado_box.get())
@@ -1276,6 +1286,7 @@ def ventana_ventas():
     NewVenta.title("Ventas")  
     NewVenta.geometry("500x500")
     
+     #El usuario ingresa la fecha, la cantidad de unidades vendidas, el precio de venta y el porcentaje a cobrar de contado.
     fecha = Label(NewVenta, text="Fecha",width=20,anchor=W)
     fecha.grid(row=0,column=0, padx=5, pady=3)
     mercancia = Label(NewVenta, text="Mercancías",width=20,anchor=W)
@@ -1294,6 +1305,8 @@ def ventana_ventas():
     global fecha_box
     fecha_box = Entry(NewVenta)
     fecha_box.grid(row=0,column=1, padx=5, pady=3)
+    
+    #El usuario escoge qué clase de producto vendió
     global mercancia_box
     mercancias = ("Sillas","Mesas")
     mercancia_box = ttk.Combobox(NewVenta, values = mercancias)
@@ -1301,6 +1314,8 @@ def ventana_ventas():
     global cantidad_box
     cantidad_box = Entry(NewVenta)
     cantidad_box.grid(row=2,column=1, padx=5, pady=3)
+    
+    #El usuario puede escoger entre tres opciones para elegir su precio: sin IVA, con IVA incluido o aquel que brinde un margen de utilidad específico.
     global metodo_box
     metodo_box = IntVar()
     sin_iva = ttk.Radiobutton(NewVenta,variable = metodo_box,text = "Por precio de venta (sin IVA)",value=0)
@@ -1369,6 +1384,8 @@ def ventana_depreciacion():
     NewDeprecio.title("Depreciación")  
     NewDeprecio.geometry("500x500")
     
+    #El usuario ingresa la fecha de la compra de un equipo, el valor de la compra
+ ,  #y los meses para los cuales quiere hallar la depreciación.
     fecha = Label(NewDeprecio, text="Fecha",width=20,anchor=W)
     fecha.grid(row=0,column=0, padx=5, pady=3)
     tipo = Label(NewDeprecio, text="Tipo",width=20,anchor=W)
@@ -1384,6 +1401,8 @@ def ventana_depreciacion():
     global fecha_box
     fecha_box = Entry(NewDeprecio)
     fecha_box.grid(row=0,column=1, padx=5, pady=3)
+    
+    #El usuario escoge la categoría a la cual pertenece el equipo.
     global tipo_box
     options1 = ("Vehiculos","Edificios","Muebles y enseres","Equipo de cómputo",
              "Maquinaria y equipo")
@@ -1395,6 +1414,8 @@ def ventana_depreciacion():
     global meses_box
     meses_box = Entry(NewDeprecio)
     meses_box.grid(row=3,column=1, padx=5, pady=3)
+    
+    #El usuario elige el método contable para calcular la depreciación.
     global metodo_box 
     options2 = ("Línea recta","Suma creciente","Suma decreciente")
     metodo_box = ttk.Combobox(NewDeprecio, values = options2)
